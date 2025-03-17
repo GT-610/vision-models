@@ -53,13 +53,15 @@ class GMVAE(nn.Module):
         self.mu_components = nn.Parameter(torch.randn(num_components, latent_dim))
         self.logvar_components = nn.Parameter(torch.zeros(num_components, latent_dim))
 
-        self.decoder = nn.Sequential(
+        self.decoder  = nn.Sequential(
             nn.Linear(latent_dim, 512),
             nn.ReLU(),
-            nn.Linear(512, 512),
+            nn.Linear(512, 512),        # 新增层 
             nn.ReLU(),
-            nn.Linear(512, input_dim),
-            nn.Sigmoid() # Output the probability
+            nn.Linear(512, 1024),       # 扩展通道 
+            nn.ReLU(),
+            nn.Linear(1024, input_dim), # 最终输出层 
+            nn.Sigmoid()
         )
 
     def reparameterize(self, mu, log_var):
